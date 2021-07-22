@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
-class N extends React.Component {
+class Navbar extends React.Component {
   constructor(props) {
     super(props);
 
@@ -14,12 +14,12 @@ class N extends React.Component {
   }
 
   componentDidMount() {
-    console.log("Component DID MOUNT!");
+    console.log("N DID MOUNT!");
     this.refreshArticle();
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log("Component DID UPDATE!");
+    console.log("N DID UPDATE!");
     if(this.props.articles != null && prevProps.articles != this.props.articles) {
       this.refreshArticle();
     }
@@ -29,35 +29,35 @@ class N extends React.Component {
     this.props.articles.map((article) => {
       switch(article.board) {
         case "Gossiping":
+          this.state.Gossipings.push(article);
           this.setState({
-            Gossipings : this.state.Gossipings.push(article)
+            Gossipings : this.state.Gossipings
           });
           return;
         case "NBA":
+          this.state.NBAs.push(article);
           this.setState({
-            NBAs : this.state.NBAs.push(article)
+            NBAs : this.state.NBAs
           });
           return;
         case "Music":
+          this.state.Musics.push(article);
           this.setState({
-            Musics : this.state.Musics.push(article)
+            Musics : this.state.Musics
           });
           return;
         default:
           return;
       }
     });
-    console.log("Component DID REFRESH!");
+    console.log("N DID REFRESH!");
   }
 
   render() {
     var ulStyle = {
       listStyleType: "none",
     };
-    var nba = this.state.Gossipings;
-    console.log("nba:");
-    console.log(nba);
-    
+
     return (
       <div>
         <h1>Welcome to My Blog!</h1>
@@ -84,87 +84,43 @@ class N extends React.Component {
   }
 }
 
-function Navbar(props) {
-  var ulStyle = {
-    listStyleType: "none",
-  };
-  const boards = props.boards;
-  const postArticle = props.postArticle;
-  var Gossipings = [];
-  var NBAs = [];
-  var Musics = [];
-  
-  props.articles.map((article) => {
-      switch(article.board) {
-          case "Gossiping":
-              Gossipings.push(article);
-              return;
-          case "NBA":
-              NBAs.push(article);
-              return;
-          case "Music":
-              Musics.push(article);
-              return;
-          default:
-              return;
-      }
-  });
-  
-  return (
-    <div>
-      <h1>Welcome to My Blog!</h1>
-      <Router>
-        <div>
-          <h2>Menu</h2>
-          <ul style={ulStyle}>
-            <li><Link to={"/gossiping"}>Gossiping</Link></li>
-            <li><Link to={"/nba"}>NBA</Link></li>
-            <li><Link to={"/music"}>Music</Link></li>
-            <li><Link to={"/add"}>Add Article</Link></li>
-          </ul>
-          <hr />
-          <Switch>
-            <Route path="/gossiping" component={() => <BoardContent board="Gossiping" articles={Gossipings} />} />
-            <Route exact path="/nba" component={() => <BoardContent board="NBA" articles={NBAs} />}  />
-            <Route exact path="/music" component={() => <BoardContent board="Music" articles={Musics} />} />
-            <Route exact path="/add" component={() => <WritingBox boards={boards} postArticle={postArticle} />} />
-          </Switch>
-        </div>
-      </Router>
-    </div>
-  );
-}
+class BoardContent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      articles : this.props.articles
+    };
+  }
 
-function BoardContent(props) {
-  console.log("type of props.board : " + typeof props.board);
-  console.log("type of props.articles : " + typeof props.articles);
-  console.log("props.articles.length : " + props.articles.length);
-  const content = props.articles.map((article) => {
-    <Article article={article} />
-  });
-  return (
-    <div>
-      <h1>{props.board}</h1>
-      <h2>Articles</h2><br />
-      {content}
-    </div>
-  );
+  render() {
+    var content = this.state.articles.map((article,i) => 
+      <Article key={i} article={article} />
+    );
+    return (
+      <div>
+        <h1>{this.props.board}</h1>
+        <h2>Articles</h2><br />
+        {content}
+      </div>
+    );
+  }
 }
 
 class Article extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      title : this.props.title,
-      content : this.props.content
+      article : this.props.article
     }
   }
   render() {
-    <fieldset>
-      <legend>{this.state.title}</legend>
-      <br />
-      {this.state.content}
-    </fieldset>
+    return(
+      <fieldset>
+        <legend>{this.state.article.title}</legend>
+        <br />
+        {this.state.article.content}
+      </fieldset>
+    );
   }
 }
 
@@ -244,7 +200,7 @@ function Option(props) {
 }
 
 function StateBoard({ boards, articles, onClickPost }) {
-  return <N boards={boards} postArticle={onClickPost} articles={articles} />;
+  return <Navbar boards={boards} postArticle={onClickPost} articles={articles} />;
 }
 
 export default StateBoard;

@@ -3,7 +3,7 @@ import { POST } from './action.js';
 
 const initialData = {
     boards : [ "Gossiping", "NBA", "Music"],
-    articles : []
+    articles : [{board:"NBA",title:"test",content:"first article"}]
 }
 
 function articleAdder(state = initialData, action){
