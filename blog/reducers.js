@@ -9,9 +9,10 @@ const initialData = {
 function articleAdder(state = initialData, action){
     switch(action.type){
         case POST:
-            console.log("post");
+            var newArticles = state.articles;
+            newArticles.push(action.article);
             return Object.assign({},state,{
-                articles : [state.articles, action.article]
+                articles: newArticles
             });
         default:
             return state;
